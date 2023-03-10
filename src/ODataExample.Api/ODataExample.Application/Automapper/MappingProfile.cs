@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using ODataExample.Application.DTOs;
 using ODataExample.DAL.Models;
 
 namespace ODataExample.Application.Automapper
 {
-    public class UserProfile : Profile
+    public class MappingProfile : Profile
     {
-        public UserProfile()
+        public MappingProfile()
         {
+            AllowNullCollections = true;
+
             CreateMap<Product, ProductDTO>()
                 .ForAllMembers(opt 
                     => opt.ExplicitExpansion());

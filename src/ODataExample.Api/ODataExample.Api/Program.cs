@@ -22,7 +22,8 @@ builder.Services.AddControllers()
         .OrderBy()
         .Expand()
         .Count()
-        .SetMaxTop(null)
+        .SetMaxTop(100)
+        .SkipToken()
         .AddRouteComponents("odata", GetEdmModel())
     );
 

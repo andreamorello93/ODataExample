@@ -21,11 +21,8 @@ namespace ODataExample.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<TDTO>> Get(
-            ODataQueryOptions<TDTO> options)
-        {
-            return await _repository.Queryable()
-                .GetAsync(_mapper, options);
-        }
+        public async Task<IEnumerable<TDTO>> Get(ODataQueryOptions<TDTO> options)
+            => await _repository.Queryable().GetQueryAsync(_mapper, options);
+        
     }
 }

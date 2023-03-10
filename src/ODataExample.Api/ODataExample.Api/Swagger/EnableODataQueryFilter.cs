@@ -1,4 +1,5 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using Microsoft.AspNetCore.OData.Routing.Attributes;
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace ODataExample.Api.Swagger
@@ -25,8 +26,9 @@ namespace ODataExample.Api.Swagger
 
         public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
-            if (context.ApiDescription.ActionDescriptor.EndpointMetadata.Any(em => em is Microsoft.AspNetCore.OData.Query.EnableQueryAttribute))
+            if (context.ApiDescription.ActionDescriptor.EndpointMetadata.Any(em => em is ODataAttributeRoutingAttribute))
             {
+                operation.Parameters.Clear();
                 operation.Parameters ??= new List<OpenApiParameter>();
                 foreach (var item in s_Parameters)
                     operation.Parameters.Add(item);
