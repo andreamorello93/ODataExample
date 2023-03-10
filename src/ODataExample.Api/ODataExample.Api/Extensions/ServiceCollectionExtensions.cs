@@ -10,6 +10,7 @@ namespace ODataExample.Api.Extensions
         {
             return services
                 .AddTransient<IGenericRepository<Customer, int>, CustomerRepository>()
+                .AddTransient<IGenericRepository<Product, int>, ProductRepository>()
                 ;
         }
     }

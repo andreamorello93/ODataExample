@@ -5,12 +5,15 @@ using Microsoft.AspNetCore.OData;
 using Microsoft.OData.Edm;
 using Microsoft.OData.ModelBuilder;
 using ODataExample.Api.Swagger;
+using ODataExample.Application.DTOs;
 using ODataExample.DAL.Models;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRepositories();
+
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddControllers()
     .AddOData(options => options
@@ -47,6 +50,7 @@ app.Run();
 static IEdmModel GetEdmModel()
 {
     ODataConventionModelBuilder builder = new();
-    builder.EntitySet<Customer>("Customers");
+    builder.EntitySet<Customer>("Customer");
+    builder.EntitySet<ProductDTO>("Product").EntityType.HasKey(p=>p.ProductId);
     return builder.GetEdmModel();
 }
