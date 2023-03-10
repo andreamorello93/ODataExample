@@ -43,7 +43,18 @@ namespace ODataExample.Application.Repositories
 
         public IQueryable<TModel> Queryable()
         {
-           return _dbSet;
+            return _dbSet;
+        }
+
+        public IQueryable<TModel> Queryable(TKey id)
+        {
+            var parameter = Expression.Parameter(typeof(TModel), nameof(TModel));
+            var property = Expression.Property(parameter,
+                _dbSet.EntityType.FindPrimaryKey().Properties.Select(x => x.Name).Single());
+            var equals = Expression.Equal(property, Expression.Constant(id));
+            var lambda = Expression.Lambda<Func<TModel, bool>>(equals, parameter);
+
+            return _dbSet.Where(lambda);
         }
 
         public async Task<IEnumerable<TModel>> Find(Expression<Func<TModel, bool>> expression)

@@ -20,9 +20,11 @@ namespace ODataExample.Api.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet]
         public async Task<IEnumerable<TDTO>> Get(ODataQueryOptions<TDTO> options)
             => await _repository.Queryable().GetQueryAsync(_mapper, options);
-        
+
+        public async Task<TDTO> Get(TKey key)
+            => _mapper.Map<TDTO>(await _repository.GetById(key));
+
     }
 }
