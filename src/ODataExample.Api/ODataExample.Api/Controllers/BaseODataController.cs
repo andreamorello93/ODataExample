@@ -22,7 +22,7 @@ namespace ODataExample.Api.Controllers
             => _repository.Queryable();
 
         [EnableQuery]
-        public  SingleResult<TModel> Get(TKey key) 
+        public SingleResult<TModel> Get(TKey key) 
             => SingleResult.Create(_repository.Queryable(key));
         
     }
