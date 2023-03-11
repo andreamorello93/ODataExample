@@ -16,7 +16,7 @@ namespace ODataExample.Api.Swagger
 
             var descriptor = context.ApiDescription.ActionDescriptor as ControllerActionDescriptor;
 
-            if (descriptor != null && descriptor.Parameters.Any(p => p.ParameterType.BaseType == typeof(ODataQueryOptions)))
+            if (descriptor != null && descriptor.FilterDescriptors.Any(filter => filter.Filter is Microsoft.AspNetCore.OData.Query.EnableQueryAttribute))
             {                              
                 operation.Parameters.Add(new OpenApiParameter()
                 {
