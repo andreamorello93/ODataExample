@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using AutoMapper.AspNet.OData;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Formatter;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
 using ODataExample.Application.DTOs;

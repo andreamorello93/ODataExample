@@ -29,7 +29,7 @@ builder.Services.AddControllers()
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c => { c.OperationFilter<EnableODataQueryFilter>(); });
+builder.Services.AddSwaggerGen(c => { c.OperationFilter<ODataOperationFilter>(); });
 
 builder.Services.AddDbContext<AdventureWorks2019Context>(
     options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
