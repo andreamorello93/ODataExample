@@ -1,6 +1,7 @@
 ﻿using Azure;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.OData.Query;
+using Microsoft.AspNetCore.OData.Results;
 using Microsoft.AspNetCore.OData.Routing.Attributes;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
@@ -17,7 +18,9 @@ namespace ODataExample.Api.Swagger
             var descriptor = context.ApiDescription.ActionDescriptor as ControllerActionDescriptor;
 
             if (descriptor != null && descriptor.FilterDescriptors.Any(filter => filter.Filter is Microsoft.AspNetCore.OData.Query.EnableQueryAttribute))
-            {                              
+            {
+                if(descriptor.AttributeRouteInfo.Name.Contains("$count")) return;
+               
                 operation.Parameters.Add(new OpenApiParameter()
                 {
                     Name = "$select",
@@ -41,6 +44,8 @@ namespace ODataExample.Api.Swagger
                     Description = "Include only the selected objects. (ex. Childrens, Locations)",
                     Required = false
                 });
+
+                if (descriptor.MethodInfo.ReturnType.BaseType == typeof(SingleResult)) return;
 
                 operation.Parameters.Add(new ()
                 {
