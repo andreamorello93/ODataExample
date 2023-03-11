@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Attributes;
+using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -15,8 +16,8 @@ namespace ODataExample.Api.Swagger
 
             var descriptor = context.ApiDescription.ActionDescriptor as ControllerActionDescriptor;
 
-            if (descriptor != null && descriptor.FilterDescriptors.Any(filter => filter.Filter is EnableQueryAttribute))
-            {
+            if (descriptor != null && descriptor.Parameters.Any(p => p.ParameterType.BaseType == typeof(ODataQueryOptions)))
+            {                              
                 operation.Parameters.Add(new OpenApiParameter()
                 {
                     Name = "$select",
@@ -41,7 +42,7 @@ namespace ODataExample.Api.Swagger
                     Required = false
                 });
 
-                operation.Parameters.Add(new OpenApiParameter()
+                operation.Parameters.Add(new ()
                 {
                     Name = "$filter",
                     In = ParameterLocation.Query,
@@ -59,10 +60,11 @@ namespace ODataExample.Api.Swagger
                     In = ParameterLocation.Query,
                     Schema = new OpenApiSchema
                     {
-                        Type = "string",
-                    },
-                    Description = "Number of objects to return. (ex. 25)",
-                    Required = false
+                        Type = "string"                        
+                    },                    
+                    Description = "Number of objects to return. (ex. 10)",
+                    Required = false,
+                    Example = new OpenApiInteger(10)
                 });
 
                 operation.Parameters.Add(new OpenApiParameter()
@@ -74,6 +76,18 @@ namespace ODataExample.Api.Swagger
                         Type = "string",
                     },
                     Description = "Number of objects to skip in the current order (ex. 50)",
+                    Required = false
+                });
+
+                operation.Parameters.Add(new OpenApiParameter()
+                {
+                    Name = "$count",
+                    In = ParameterLocation.Query,
+                    Schema = new OpenApiSchema
+                    {
+                        Type = "bool",
+                    },
+                    Description = "Return count of the items based on query",
                     Required = false
                 });
 

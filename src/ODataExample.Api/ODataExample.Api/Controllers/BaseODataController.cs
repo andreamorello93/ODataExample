@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.OData.Formatter;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Results;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
+using ODataExample.Api.Swagger;
 using ODataExample.Application.Interfaces;
-using ODataExample.DAL.Models;
+
+using System.Runtime.Serialization;
 
 namespace ODataExample.Api.Controllers
 {
@@ -17,13 +20,13 @@ namespace ODataExample.Api.Controllers
             _repository = repository;
         }
 
-        [EnableQuery(PageSize = 500)]
-        public IQueryable<TModel> Get() 
+        [EnableQuery]
+        public IQueryable<TModel> Get([SwaggerHide] ODataQueryOptions<TModel> options) 
             => _repository.Queryable();
 
         [EnableQuery]
-        public SingleResult<TModel> Get(TKey key) 
-            => SingleResult.Create(_repository.Queryable(key));
+        public SingleResult<TModel> Get([SwaggerHide] ODataQueryOptions<TModel> options, TKey key) 
+            => SingleResult.Create( _repository.Queryable(key));
         
-    }
+    }   
 }

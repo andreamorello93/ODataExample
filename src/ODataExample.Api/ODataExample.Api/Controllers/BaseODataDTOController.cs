@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using AutoMapper.AspNet.OData;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.OData.Formatter;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
+using ODataExample.Api.Swagger;
 using ODataExample.Application.DTOs;
 using ODataExample.Application.Interfaces;
 using ODataExample.DAL.Models;
@@ -21,10 +23,10 @@ namespace ODataExample.Api.Controllers
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<TDTO>> Get(ODataQueryOptions<TDTO> options)
+        public async Task<IEnumerable<TDTO>> Get([SwaggerHide] ODataQueryOptions<TDTO> options)
             => await _repository.Queryable().GetQueryAsync(_mapper, options);
 
-        public async Task<TDTO> Get(TKey key)
+        public async Task<TDTO> Get([SwaggerHide] ODataQueryOptions<TDTO> options, TKey key)
             => _mapper.Map<TDTO>(await _repository.GetById(key));
 
     }

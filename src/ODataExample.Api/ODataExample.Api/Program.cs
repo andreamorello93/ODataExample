@@ -21,8 +21,7 @@ builder.Services.AddControllers()
         .Filter()
         .OrderBy()
         .Expand()
-        .Count()
-        .SetMaxTop(1000)
+        .Count()        
         .SkipToken()
         .AddRouteComponents("odata", GetEdmModel())
     );
@@ -51,7 +50,8 @@ app.Run();
 static IEdmModel GetEdmModel()
 {
     ODataConventionModelBuilder builder = new();
-    builder.EntitySet<Customer>("Customer");
-    builder.EntitySet<ProductDTO>("Product").EntityType.HasKey(p=>p.ProductId);
+    builder.EntitySet<Customer>("Customer").EntityType.SetMaxTopAndPageSize();
+    builder.EntitySet<ProductDTO>("Product").EntityType.HasKey(p => p.ProductId).SetMaxTopAndPageSize();
+
     return builder.GetEdmModel();
 }
