@@ -54,6 +54,7 @@ app.Run();
 static IEdmModel GetEdmModel()
 {
     ODataConventionModelBuilder builder = new();
+
     builder.EntitySet<Customer>("Customer").EntityType.SetMaxTopAndPageSize();
     builder.EntitySet<ProductDTO>("Product").EntityType.HasKey(p => p.ProductId).SetMaxTopAndPageSize();
 

@@ -26,7 +26,7 @@ namespace ODataExample.Api.Controllers
 
         [EnableQuery]
         public SingleResult<TModel> Get([SwaggerHide] ODataQueryOptions<TModel> options, TKey key) 
-            => SingleResult.Create( _repository.Queryable(key));
+            => SingleResult.Create(_repository.Queryable(key));
         
     }   
 }
