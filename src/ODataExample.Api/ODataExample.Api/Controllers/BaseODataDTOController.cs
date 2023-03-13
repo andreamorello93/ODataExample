@@ -27,7 +27,9 @@ namespace ODataExample.Api.Controllers
         }
 
         public async Task<IEnumerable<TDTO>> Get([SwaggerHide] ODataQueryOptions<TDTO> options)
-            => (await _repository.Queryable().GetQueryAsync(_mapper, options));
+            => (await _repository.Queryable().GetQueryAsync(_mapper, options, 
+                new QuerySettings(){ ODataSettings = 
+                    new ODataSettings(){ PageSize = options.Context.DefaultQuerySettings.MaxTop } }));
 
         [EnableQuery]
         public SingleResult<TDTO> Get([SwaggerHide] ODataQueryOptions<TDTO> options, TKey key)
