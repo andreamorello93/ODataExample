@@ -8,6 +8,7 @@ using ODataExample.Api.Swagger;
 using ODataExample.Application.Interfaces;
 
 using System.Runtime.Serialization;
+using ODataExample.Application.Const;
 
 namespace ODataExample.Api.Controllers
 {
@@ -20,7 +21,7 @@ namespace ODataExample.Api.Controllers
             _repository = repository;
         }
 
-        [EnableQuery]
+        [EnableQuery(PageSize = Constants.PAGE_SIZE)]
         public IQueryable<TModel> Get([SwaggerHide] ODataQueryOptions<TModel> options) 
             => _repository.Queryable();
 

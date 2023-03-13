@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.OData.Results;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
 using Microsoft.Extensions.Options;
 using ODataExample.Api.Swagger;
+using ODataExample.Application.Const;
 using ODataExample.Application.DTOs;
 using ODataExample.Application.Interfaces;
 using ODataExample.DAL.Models;
@@ -28,8 +29,7 @@ namespace ODataExample.Api.Controllers
 
         public async Task<IEnumerable<TDTO>> Get([SwaggerHide] ODataQueryOptions<TDTO> options)
             => (await _repository.Queryable().GetQueryAsync(_mapper, options, 
-                new QuerySettings(){ ODataSettings = 
-                    new ODataSettings(){ PageSize = options.Context.DefaultQuerySettings.MaxTop } }));
+                new QuerySettings(){ ODataSettings = new ODataSettings(){ PageSize = Constants.PAGE_SIZE } }));
 
         [EnableQuery]
         public SingleResult<TDTO> Get([SwaggerHide] ODataQueryOptions<TDTO> options, TKey key)

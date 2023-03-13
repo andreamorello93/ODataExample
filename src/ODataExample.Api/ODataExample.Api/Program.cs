@@ -1,6 +1,7 @@
 using ODataExample.Api.Extensions;
 using ODataExample.DAL.Data;
 using Microsoft.EntityFrameworkCore;
+using ODataExample.Application.Const;
 using Microsoft.AspNetCore.OData;
 using Microsoft.OData.Edm;
 using Microsoft.OData.ModelBuilder;
@@ -17,13 +18,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddControllers()
     .AddOData(options => options
-        .Select()
-        .Filter()
-        .OrderBy()
-        .Expand()
-        .Count()        
-        .SkipToken()
-        .SetMaxTop(600)
+        .EnableQueryFeatures(Constants.PAGE_SIZE)
         .AddRouteComponents("odata", GetEdmModel())
     );
 
@@ -56,8 +51,8 @@ static IEdmModel GetEdmModel()
 {
     ODataConventionModelBuilder builder = new();
 
-    builder.EntitySet<Customer>("Customer").EntityType.SetMaxTopAndPageSize();
-    builder.EntitySet<ProductDTO>("Product").EntityType.HasKey(p => p.ProductId).SetMaxTopAndPageSize();
+    builder.EntitySet<Customer>("Customer");
+    builder.EntitySet<ProductDTO>("Product").EntityType.HasKey(p => p.ProductId);
 
     return builder.GetEdmModel();
 }
