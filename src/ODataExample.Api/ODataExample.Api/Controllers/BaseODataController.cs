@@ -9,6 +9,7 @@ using ODataExample.Application.Interfaces;
 
 using System.Runtime.Serialization;
 using ODataExample.Application.Const;
+using System.Net;
 
 namespace ODataExample.Api.Controllers
 {
@@ -22,10 +23,12 @@ namespace ODataExample.Api.Controllers
         }
 
         [EnableQuery(PageSize = Constants.PAGE_SIZE)]
+        [ProducesResponseType(typeof(PageResult), (int)HttpStatusCode.OK)]
         public IQueryable<TModel> Get([SwaggerHide] ODataQueryOptions<TModel> options) 
             => _repository.Queryable();
 
         [EnableQuery]
+        [ProducesResponseType(typeof(SingleResult), (int)HttpStatusCode.OK)]
         public SingleResult<TModel> Get([SwaggerHide] ODataQueryOptions<TModel> options, TKey key) 
             => SingleResult.Create(_repository.Queryable(key));
         

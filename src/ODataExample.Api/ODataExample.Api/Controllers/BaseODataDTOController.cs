@@ -1,5 +1,7 @@
-﻿using AutoMapper;
+﻿using System.Net;
+using AutoMapper;
 using AutoMapper.AspNet.OData;
+using AutoMapper.Internal;
 using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -27,11 +29,13 @@ namespace ODataExample.Api.Controllers
             _mapper = mapper;
         }
 
+        [ProducesResponseType(typeof(PageResult), (int)HttpStatusCode.OK)]
         public async Task<IEnumerable<TDTO>> Get([SwaggerHide] ODataQueryOptions<TDTO> options)
             => (await _repository.Queryable().GetQueryAsync(_mapper, options, 
                 new QuerySettings(){ ODataSettings = new ODataSettings(){ PageSize = Constants.PAGE_SIZE } }));
 
         [EnableQuery]
+        [ProducesResponseType(typeof(SingleResult), (int)HttpStatusCode.OK)]
         public SingleResult<TDTO> Get([SwaggerHide] ODataQueryOptions<TDTO> options, TKey key)
             => SingleResult.Create(_repository.Queryable(key).GetQuery(_mapper, options));
 
