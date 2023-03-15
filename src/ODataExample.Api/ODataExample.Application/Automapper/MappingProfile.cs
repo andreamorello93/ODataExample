@@ -10,7 +10,7 @@ namespace ODataExample.Application.Automapper
         {
             AllowNullCollections = true;
 
-            CreateMap<Product, ProductDTO>()
+            CreateMap<Product, ProductDTO>().ReverseMap()
                 .ForAllMembers(opt 
                     => opt.ExplicitExpansion());
         }
