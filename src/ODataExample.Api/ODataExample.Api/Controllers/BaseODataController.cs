@@ -10,6 +10,9 @@ using ODataExample.Application.Interfaces;
 using System.Runtime.Serialization;
 using ODataExample.Application.Const;
 using System.Net;
+using Microsoft.AspNetCore.OData.Deltas;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace ODataExample.Api.Controllers
 {
@@ -31,6 +34,29 @@ namespace ODataExample.Api.Controllers
         [ProducesResponseType(typeof(SingleResult), (int)HttpStatusCode.OK)]
         public SingleResult<TModel> Get([SwaggerHide] ODataQueryOptions<TModel> options, TKey key) 
             => SingleResult.Create(_repository.Queryable(key));
-        
+
+        [ProducesResponseType(typeof(CreatedODataResult<object>), (int)HttpStatusCode.Created)]
+        public async Task<IActionResult> Post([FromBody] TModel entity)
+            => Created(await _repository.Insert(entity));
+
+        [ProducesResponseType(typeof(UpdatedODataResult<object>), (int) HttpStatusCode.OK)]
+        public async Task<IActionResult> Patch(TKey key, [FromBody] Delta<TModel> entity)
+        {
+            var currentEntity = await _repository.GetById(key);
+            entity.Patch(currentEntity);
+            return Updated(await _repository.Update(currentEntity));
+        }
+
+        [ProducesResponseType(typeof(NoContentResult), (int)HttpStatusCode.NoContent)]
+        public async Task<IActionResult> Delete(TKey key)
+        {
+            var entity = await _repository.GetById(key);
+
+            if(entity == null) return NotFound();
+
+            await _repository.Delete(entity);
+            return NoContent();
+        }
+
     }   
 }

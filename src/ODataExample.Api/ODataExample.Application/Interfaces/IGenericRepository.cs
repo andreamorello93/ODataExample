@@ -15,9 +15,9 @@ namespace ODataExample.Application.Interfaces
         IQueryable<TModel> Queryable(TKey id);
         Task<IEnumerable<TModel>> Find(Expression<Func<TModel, bool>> expression);
         Task<TModel> Insert(TModel entity);
-        Task<TModel> Update(TModel entity, TKey id);
+        Task<TModel> Update(TModel entity);
         Task<IEnumerable<TModel>> AddRange(IEnumerable<TModel> entities);
-        Task<bool> Delete(TKey id);
+        Task<bool> Delete(TModel id);
         Task<bool> DeleteRange(IEnumerable<TModel> entities);
     }
 }

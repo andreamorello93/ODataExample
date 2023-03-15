@@ -27,12 +27,11 @@ namespace ODataExample.Application.Repositories
              return entity;
         }
 
-        public async Task<TModel> Update(TModel entity, TKey id)
+        public async Task<TModel> Update(TModel entity)
         {
-            var entityDb = await GetById(id);
-            _dbSet.Entry(entityDb).CurrentValues.SetValues(entity);
+            _dbSet.Update(entity);
             await _context.SaveChangesAsync();
-            return entityDb;
+            return entity;
         }
         public async Task<IEnumerable<TModel>> AddRange(IEnumerable<TModel> entities)
         {
@@ -69,9 +68,8 @@ namespace ODataExample.Application.Repositories
         {
             return await _dbSet.FindAsync(id);
         }
-        public async Task<bool> Delete(TKey id)
+        public async Task<bool> Delete(TModel entity)
         {
-            var entity = await GetById(id);
             _dbSet.Remove(entity);
             await _context.SaveChangesAsync();
             return true;
