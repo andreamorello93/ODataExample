@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Results;
 using Microsoft.AspNetCore.OData.Routing.Attributes;
+using Microsoft.AspNetCore.OData.Routing.Controllers;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -16,13 +17,14 @@ namespace ODataExample.Api.Swagger
             if (operation.Parameters == null) operation.Parameters = new List<OpenApiParameter>();
 
             var descriptor = context.ApiDescription.ActionDescriptor as ControllerActionDescriptor;
+            
+            if (descriptor != null && descriptor.ControllerTypeInfo.BaseType?.BaseType == typeof(ODataController))
+                operation.OperationId += context.ApiDescription.HttpMethod;
 
             if (descriptor != null && descriptor.Parameters.Any(p => p.ParameterType.BaseType == typeof(ODataQueryOptions)))
             {
-                context.ApiDescription.ActionDescriptor.AttributeRouteInfo.Name += context.ApiDescription.HttpMethod;
-
                 if (descriptor.AttributeRouteInfo.Name.Contains("$count")) return;
-               
+
                 operation.Parameters.Add(new OpenApiParameter()
                 {
                     Name = "$select",

@@ -7,12 +7,17 @@ using Microsoft.OData.Edm;
 using Microsoft.OData.ModelBuilder;
 using ODataExample.Api.Swagger;
 using ODataExample.Application.DTOs;
+using ODataExample.Application.Processors;
 using ODataExample.DAL.Models;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRepositories();
+
+builder.Services.AddODataDTOProcessors();
+
+builder.Services.AddODataProcessors();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

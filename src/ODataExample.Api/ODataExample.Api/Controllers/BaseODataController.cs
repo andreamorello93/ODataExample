@@ -13,48 +13,49 @@ using System.Net;
 using Microsoft.AspNetCore.OData.Deltas;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using ODataExample.Application.Processors;
 
 namespace ODataExample.Api.Controllers
 {
     public class BaseODataController<TModel, TKey> : ODataController where TModel : class
     {
-        private readonly IGenericRepository<TModel, TKey> _repository;
+        private readonly IODataProcessor<TModel, TKey> _oDataProcessor;
 
-        public BaseODataController(IGenericRepository<TModel, TKey> repository)
+        public BaseODataController(IODataProcessor<TModel, TKey> oDataProcessor)
         {
-            _repository = repository;
+            _oDataProcessor = oDataProcessor;
         }
 
         [EnableQuery(PageSize = Constants.PAGE_SIZE)]
         [ProducesResponseType(typeof(PageResult), (int)HttpStatusCode.OK)]
-        public IQueryable<TModel> Get([SwaggerHide] ODataQueryOptions<TModel> options) 
-            => _repository.Queryable();
+        public IQueryable<TModel> Get([SwaggerHide] ODataQueryOptions<TModel> options) => _oDataProcessor.Get();
 
         [EnableQuery]
         [ProducesResponseType(typeof(SingleResult), (int)HttpStatusCode.OK)]
-        public SingleResult<TModel> Get([SwaggerHide] ODataQueryOptions<TModel> options, TKey key) 
-            => SingleResult.Create(_repository.Queryable(key));
+        public SingleResult<TModel> Get([SwaggerHide] ODataQueryOptions<TModel> options, TKey key) => _oDataProcessor.Get(key);
 
         [ProducesResponseType(typeof(CreatedODataResult<object>), (int)HttpStatusCode.Created)]
-        public async Task<IActionResult> Post([FromBody] TModel entity)
-            => Created(await _repository.Insert(entity));
+        public async Task<IActionResult> Post([FromBody] TModel entity) => Created(await _oDataProcessor.Post(entity));
 
         [ProducesResponseType(typeof(UpdatedODataResult<object>), (int) HttpStatusCode.OK)]
         public async Task<IActionResult> Patch(TKey key, [FromBody] Delta<TModel> entity)
         {
-            var currentEntity = await _repository.GetById(key);
-            entity.Patch(currentEntity);
-            return Updated(await _repository.Update(currentEntity));
+            var result = await _oDataProcessor.Patch(key, entity);
+
+            if (result == HttpStatusCode.NotFound)
+                return NotFound();
+
+            return Updated(entity);
         }
 
         [ProducesResponseType(typeof(NoContentResult), (int)HttpStatusCode.NoContent)]
         public async Task<IActionResult> Delete(TKey key)
         {
-            var entity = await _repository.GetById(key);
+            var result = await _oDataProcessor.Delete(key);
 
-            if(entity == null) return NotFound();
+            if (result == HttpStatusCode.NotFound)
+                return NotFound();
 
-            await _repository.Delete(entity);
             return NoContent();
         }
 

@@ -45,6 +45,11 @@ namespace ODataExample.Application.Repositories
             return _dbSet;
         }
 
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
+
         public IQueryable<TModel> Queryable(TKey id)
         {
             var parameter = Expression.Parameter(typeof(TModel), nameof(TModel));

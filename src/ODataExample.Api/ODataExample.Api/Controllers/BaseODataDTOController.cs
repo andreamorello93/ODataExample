@@ -12,60 +12,59 @@ using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Results;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Options;
 using ODataExample.Api.Swagger;
 using ODataExample.Application.Const;
 using ODataExample.Application.DTOs;
 using ODataExample.Application.Interfaces;
+using ODataExample.Application.Processors;
 using ODataExample.Application.Repositories;
 using ODataExample.DAL.Models;
 
 namespace ODataExample.Api.Controllers
 {
-    public class BaseODataDTOController<TDTO, TModel, TKey> : ODataController where TModel : class where TDTO : class
+    public class BaseODataDTOController<TDTO, TKey> : ODataController where TDTO : class
     {
-        private readonly IGenericRepository<TModel, TKey> _repository;
-        private readonly IMapper _mapper;
+        private readonly IODataDTOProcessor<TDTO, TKey> _oDataDtoProcessor;
 
-        public BaseODataDTOController(IGenericRepository<TModel, TKey> repository, IMapper mapper)
+        public BaseODataDTOController(IODataDTOProcessor<TDTO, TKey> oDataDtoProcessor)
         {
-            _repository = repository;
-            _mapper = mapper;
+            _oDataDtoProcessor = oDataDtoProcessor;
         }
 
         [ProducesResponseType(typeof(PageResult), (int)HttpStatusCode.OK)]
         public async Task<IEnumerable<TDTO>> Get([SwaggerHide] ODataQueryOptions<TDTO> options)
-            => (await _repository.Queryable().GetQueryAsync(_mapper, options, 
-                new QuerySettings(){ ODataSettings = new ODataSettings(){ PageSize = Constants.PAGE_SIZE } }));
+            => await _oDataDtoProcessor.Get(options);
 
         [EnableQuery]
         [ProducesResponseType(typeof(SingleResult), (int)HttpStatusCode.OK)]
         public SingleResult<TDTO> Get([SwaggerHide] ODataQueryOptions<TDTO> options, TKey key)
-            => SingleResult.Create(_repository.Queryable(key).GetQuery(_mapper, options));
+            => _oDataDtoProcessor.Get(options, key);
 
         [ProducesResponseType(typeof(CreatedODataResult<object>), (int)HttpStatusCode.Created)]
         public async Task<IActionResult> Post([FromBody] TDTO entity)
-            => Created(_mapper.Map<TDTO>(await _repository.Insert(_mapper.Map<TModel>(entity))));
+            => Created(await _oDataDtoProcessor.Post(entity));
 
-        [ProducesResponseType(typeof(UpdatedODataResult<object>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(UpdatedODataResult<object>), (int) HttpStatusCode.OK)]
         public async Task<IActionResult> Patch(TKey key, [FromBody] Delta<TDTO> entity)
         {
-            var currentEntity = await _repository.GetById(key);
-            var dto = _mapper.Map<TDTO>(currentEntity);
-            entity.Patch(dto);
-            _mapper.Map(dto, currentEntity);
-            await _repository.Update(currentEntity);
-            return Updated(dto);
-        }
+            var result = await _oDataDtoProcessor.Patch(key, entity);
 
+            if(result == HttpStatusCode.NotFound)
+                return NotFound();
+            
+            return Updated(entity);
+        }
+        
         [ProducesResponseType(typeof(NoContentResult), (int)HttpStatusCode.NoContent)]
         public async Task<IActionResult> Delete(TKey key)
         {
-            var entity = await _repository.GetById(key);
+            var result = await _oDataDtoProcessor.Delete(key);
 
-            if (entity == null) return NotFound();
+            if (result == HttpStatusCode.NotFound)
+                return NotFound();
 
-            await _repository.Delete(entity);
             return NoContent();
         }
 

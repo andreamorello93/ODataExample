@@ -12,6 +12,7 @@ namespace ODataExample.Application.Interfaces
         Task<TModel> GetById(TKey id);
         Task<IEnumerable<TModel>> GetAll();
         IQueryable<TModel> Queryable();
+        Task SaveChangesAsync();
         IQueryable<TModel> Queryable(TKey id);
         Task<IEnumerable<TModel>> Find(Expression<Func<TModel, bool>> expression);
         Task<TModel> Insert(TModel entity);
