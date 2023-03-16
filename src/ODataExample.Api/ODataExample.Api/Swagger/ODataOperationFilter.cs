@@ -19,7 +19,9 @@ namespace ODataExample.Api.Swagger
 
             if (descriptor != null && descriptor.Parameters.Any(p => p.ParameterType.BaseType == typeof(ODataQueryOptions)))
             {
-                if(descriptor.AttributeRouteInfo.Name.Contains("$count")) return;
+                context.ApiDescription.ActionDescriptor.AttributeRouteInfo.Name += context.ApiDescription.HttpMethod;
+
+                if (descriptor.AttributeRouteInfo.Name.Contains("$count")) return;
                
                 operation.Parameters.Add(new OpenApiParameter()
                 {
