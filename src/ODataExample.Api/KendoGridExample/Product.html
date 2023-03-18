@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        html {
+            font-size: 14px;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+    </style>
+    <title></title>
+    <link href="https://kendo.cdn.telerik.com/themes/6.2.0/default/default-main.css" rel="stylesheet" />
+
+    <script src="https://kendo.cdn.telerik.com/2023.1.314/js/jquery.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2023.1.314/js/kendo.all.min.js"></script>
+
+
+</head>
+
+<body>
+    <div id="example">
+        <div id="grid"></div>
+        <script>
+            $(document).ready(function () {
+                var crudServiceBaseUrl = "https://localhost:44393/odata/product",
+                    dataSource = new kendo.data.DataSource({
+                        type: "odata-v4",
+                        transport: {
+                            read: {
+                                url: crudServiceBaseUrl
+                            },
+                            update: {
+                                url: function (data) {
+                                    return crudServiceBaseUrl + "(" + data.ProductId + ")";
+                                },
+                                type: "PATCH"
+                            },
+                            create: {
+                                url: crudServiceBaseUrl
+                            },
+                            destroy: {
+                                url: function (data) {
+                                    return crudServiceBaseUrl + "(" + data.ProductId + ")";
+                                }
+                            }
+
+                        },
+                        error: function (e) {
+                            var message = "";
+                            if (e.xhr) {
+                                message = e.xhr.responseText;
+                            } else if (e.errorThrown) {
+                                message = e.errorThrown;
+                            }
+                            if (message) {
+                                var grid = $('#grid').data('kendoGrid');
+                                $("<div></div>").kendoAlert({
+                                    title: "Error",
+                                    content: message
+                                }).data("kendoAlert").open();
+                                grid.one("dataBinding", function (x) {
+                                    x.preventDefault();
+                                });
+                            }
+                        },
+                        batch: false,
+                        pageSize: 10,
+                        serverPaging: true,
+                        serverFiltering: true,
+                        schema: {
+                            model: {
+                                id: "ProductId",
+                                fields: {
+                                    ProductId: { type: "number", editable: false, required: false },
+                                    Name: { type: "string", editable: true, validation: { required: true } },
+                                    ProductNumber: { type: "string", editable: true, validation: { required: true } },
+                                    MakeFlag: { type: "boolean", editable: true },
+                                    FinishedGoodsFlag: { type: "boolean", editable: true },
+                                    SafetyStockLevel: { type: "number", editable: true, validation: { required: true } },
+                                    ReorderPoint: { type: "number", editable: true, validation: { required: true } },
+                                    StandardCost: { type: "number", editable: true, validation: { required: true } },
+                                    ListPrice: { type: "number", editable: true, validation: { required: true } },
+                                    DaysToManufacture: { type: "number", editable: true, validation: { required: true } },
+                                    SellStartDate: { type: "date", editable: true, validation: { required: true } },
+                                    Rowguid: { type: "string", defaultValue: kendo.guid(), editable: true, validation: { required: true } },
+                                    ModifiedDate: { type: "date", editable: true, validation: { required: true } }
+                                }
+                            }
+                        }
+                    });
+
+                $("#grid").kendoGrid({
+                    dataSource: dataSource,
+                    pageable: true,
+                    sortable: true,
+                    navigatable: true,
+                    resizable: true,
+                    reorderable: true,
+                    groupable: true,
+                    scrollable: true,
+                    height: 800,
+                    filterable: {
+                        mode: "row"
+                    },
+                    toolbar: ["create"],
+                    columns: [
+                        { field: "ProductId", width: "100px", },
+                        "Name",
+                        { field: "ProductNumber", width: "150px" },
+                        { field: "MakeFlag", width: "150px" },
+                        { field: "FinishedGoodsFlag", width: "150px" },
+                        { field: "SafetyStockLevel", width: "150px" },
+                        { field: "ReorderPoint", width: "150px" },
+                        { field: "StandardCost", width: "150px" },
+                        { field: "ListPrice", width: "150px" },
+                        { field: "DaysToManufacture", width: "150px" },
+                        {
+                            field: "SellStartDate", width: "150px", format: "{0:dd/MM/yyyy HH:mm:ss}",
+
+                            filterable: {
+                                ui: "datetimepicker"
+                            }
+                        },
+                        { field: "Rowguid", width: "150px" },
+                        {
+                            field: "ModifiedDate", width: "150px", format: "{0:dd/mm/yyyy HH:mm:ss}",
+
+                            filterable: {
+                                ui: "datetimepicker"
+                            }
+                        },
+                        { command: ["edit", "destroy"], title: " ", width: "200px" }],
+                    editable: "popup"
+                });
+            });
+        </script>
+    </div>
+
+
+</body>
+
+</html>

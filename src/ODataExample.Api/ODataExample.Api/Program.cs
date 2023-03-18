@@ -10,6 +10,7 @@ using ODataExample.Application.DTOs;
 using ODataExample.Application.Processors;
 using ODataExample.DAL.Models;
 
+const string _allowAllOrigins = "AllowAllOrigins";
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,12 @@ builder.Services.AddRepositories();
 builder.Services.AddODataDTOProcessors();
 
 builder.Services.AddODataProcessors();
+
+builder.Services.AddCors(option =>
+{
+    option.AddPolicy(_allowAllOrigins, builder =>
+        builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+});
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
@@ -46,6 +53,8 @@ app.UseSwaggerUI();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseCors(_allowAllOrigins);
 
 app.MapControllers();
 

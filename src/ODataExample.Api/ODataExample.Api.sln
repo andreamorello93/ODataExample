@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ODataExample.Api", "ODataExample.Api\ODataExample.Api.csproj", "{EE0BE40E-6A22-4754-811E-2DC4EF6DE3FE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ODataExample.Api", "ODataExample.Api\ODataExample.Api.csproj", "{EE0BE40E-6A22-4754-811E-2DC4EF6DE3FE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ODataExample.DAL", "ODataExample.DAL\ODataExample.DAL.csproj", "{4A91F68A-4257-4EAA-AA90-7B3542DE9DD9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ODataExample.DAL", "ODataExample.DAL\ODataExample.DAL.csproj", "{4A91F68A-4257-4EAA-AA90-7B3542DE9DD9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ODataExample.Application", "ODataExample.Application\ODataExample.Application.csproj", "{5B0F2307-E083-4F87-9ECD-1642A2D5053D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ODataExample.Application", "ODataExample.Application\ODataExample.Application.csproj", "{5B0F2307-E083-4F87-9ECD-1642A2D5053D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
