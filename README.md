@@ -8,4 +8,8 @@
   "DefaultConnection": "Server={myServerAddress};Database={myDataBase};User Id={myUsername};Password={myPassword};"
 }
 ```
- 
+# Bonus: Kendo Grid for JQuery with OData Binding
+
+1) Run the Api
+2) Open Product.html for performing CRUD operations to Product entity
+
